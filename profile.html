@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TeamUp - Profile</title>
+  <style>
+    /* 🎨 Dark + Neon Theme */
+    :root {
+      --primary: #0f172a;   /* Dark Navy Black */
+      --secondary: #38bdf8; /* Neon Sky Blue */
+      --accent: #f43f5e;    /* Neon Pink */
+      --text: #e5e7eb;      /* Light Gray Text */
+      --background: #0a0e1a; /* Dark Background */
+      --white: #ffffff;
+      --card-bg: #1e293b;   /* Card background */
+    }
+
+    /* Reset */
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: var(--primary);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .nav-left {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: var(--secondary);
+    }
+    .nav-center {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--accent);
+      letter-spacing: 2px;
+    }
+    .profile-btn {
+      padding: 0.5rem 1rem;
+      background: var(--accent);
+      color: var(--white);
+      border: none;
+      border-radius: 5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .profile-btn:hover {
+      background: var(--secondary);
+      color: var(--primary);
+    }
+
+    /* Main Content */
+    .profile-container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .profile-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .profile-header h1 {
+      color: var(--secondary);
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .profile-header p {
+      color: var(--text);
+      font-size: 1.1rem;
+    }
+
+    /* Form Styling */
+    .profile-form {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--secondary);
+      font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #374151;
+      border-radius: 5px;
+      background: var(--primary);
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.3);
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    /* Profile Photo Styling */
+    .profile-photo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .profile-photo-preview {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--secondary);
+      margin-bottom: 1rem;
+      background-color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .profile-photo-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-photo-placeholder {
+      color: var(--text);
+      font-size: 3rem;
+    }
+
+    .photo-upload-btn {
+      padding: 0.6rem 1.2rem;
+      background: var(--accent);
+      color: var(--white);
+      border: none;
+      border-radius: 5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .photo-upload-btn:hover {
+      background: var(--secondary);
+    }
+
+    #photoInput {
+      display: none;
+    }
+
+    /* Tags Styling */
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-top: 0.5rem;
+      max-height: 150px;
+      overflow-y: auto;
+      padding: 5px;
+      border: 1px solid #374151;
+      border-radius: 5px;
+      background: var(--primary);
+    }
+
+    .tag {
+      padding: 0.5rem 1rem;
+      background: var(--primary);
+      color: var(--text);
+      border: 1px solid var(--secondary);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+      flex-shrink: 0;
+    }
+
+    .tag:hover {
+      background: rgba(56, 189, 248, 0.2);
+    }
+
+    .tag.selected {
+      background: var(--secondary);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    /* Button Styling */
+    .save-btn {
+      display: block;
+      width: 100%;
+      padding: 1rem;
+      background: var(--accent);
+      color: var(--white);
+      border: none;
+      border-radius: 5px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 1.5rem;
+    }
+
+    .save-btn:hover {
+      background: var(--secondary);
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+    }
+
+    /* Profile Display */
+    .profile-display {
+      display: none;
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .profile-display h2 {
+      color: var(--secondary);
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .display-profile-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .display-profile-photo {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--secondary);
+      margin-bottom: 1rem;
+    }
+
+    .profile-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .info-item {
+      margin-bottom: 1rem;
+    }
+
+    .info-label {
+      color: var(--secondary);
+      font-weight: 600;
+      margin-bottom: .3rem;
+    }
+
+    .info-value {
+      color: var(--text);
+    }
+
+    .display-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .display-tag {
+      padding: 0.5rem 1rem;
+      background: var(--secondary);
+      color: var(--primary);
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    /* Invitations Section */
+    .invitations-section {
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-top: 2rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .invitations-section h3 {
+      color: var(--accent);
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .invitations-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .invitation-card {
+      background: var(--primary);
+      padding: 1rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--secondary);
+    }
+
+    .invitation-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .invitation-sender {
+      font-weight: 600;
+      color: var(--secondary);
+    }
+
+    .invitation-team {
+      font-style: italic;
+      color: var(--text);
+    }
+
+    .invitation-actions {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 0.8rem;
+    }
+
+    .invitation-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .invitation-btn.accept {
+      background: var(--secondary);
+      color: var(--primary);
+    }
+
+    .invitation-btn.accept:hover {
+      background: #0ea5e9;
+    }
+
+    .invitation-btn.reject {
+      background: #6b7280;
+      color: var(--text);
+    }
+
+    .invitation-btn.reject:hover {
+      background: #9ca3af;
+    }
+
+    .no-invitations {
+      text-align: center;
+      color: var(--text);
+      padding: 1rem;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      background: var(--primary);
+      color: var(--text);
+      border-top: 1px solid #2d3748;
+      margin-top: auto;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    footer a:hover {
+      color: var(--secondary);
+    }
+
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      border-radius: 5px;
+      color: white;
+      font-weight: 500;
+      z-index: 10000;
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    
+    .notification.success {
+      background-color: #10b981;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .notification.error {
+      background-color: #ef4444;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .profile-info {
+        grid-template-columns: 1fr;
+      }
+      
+      .invitation-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-left">Team<span class="neon">Up</span></div>
+    <div class="nav-center">TEAMUP</div>
+    <div class="nav-right"><a href="workspace.html" class="profile-btn">Main Page</a></div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="profile-container">
+    <div class="profile-header">
+      <h1>Create Your Profile</h1>
+      <p>Showcase your skills and connect with the right teammates</p>
+    </div>
+
+    <!-- Profile Form -->
+    <form id="profileForm" class="profile-form">
+      <!-- Profile Photo Upload -->
+      <div class="profile-photo-container full-width">
+        <div class="profile-photo-preview" id="photoPreview">
+          <div class="profile-photo-placeholder">👤</div>
+        </div>
+        <input type="file" id="photoInput" accept="image/*">
+        <button type="button" class="photo-upload-btn" onclick="document.getElementById('photoInput').click()">
+          Upload Profile Photo
+        </button>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required readonly>
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" required readonly>
+        </div>
+        
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="age">Age</label>
+          <input type="number" id="age" name="age" min="16" max="100" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="quality">Any Quality (optional)</label>
+          <input type="text" id="quality" name="quality" placeholder="e.g., Leadership, Creativity">
+        </div>
+        
+        <div class="form-group">
+          <label for="location">Location</label>
+          <input type="text" id="location" name="location" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="size">Qualification</label>
+          <input type="text" id="size" name="size" placeholder="e.g., B.Tech Computer Science">
+        </div>
+        
+        <div class="form-group">
+          <label for="bomax">Domain</label>
+          <input type="text" id="bomax" name="bomax" placeholder="e.g., Web Development, AI/ML">
+        </div>
+        
+        <div class="form-group">
+          <label for="toyHeads">Skillset</label>
+          <input type="text" id="toyHeads" name="toyHeads" placeholder="e.g., React, Node.js, Python">
+        </div>
+        
+        <div class="form-group full-width">
+          <label>Skills & Interests (Select relevant tags)</label>
+          <div class="tags-container" id="tagsContainer">
+            <!-- Tags will be added here by JavaScript -->
+          </div>
+        </div>
+        
+        <div class="form-group full-width">
+          <label for="bio">Bio</label>
+          <textarea id="bio" name="bio" rows="4" placeholder="Tell us about yourself..."></textarea>
+        </div>
+      </div>
+      
+      <button type="submit" class="save-btn">Save Profile</button>
+    </form>
+    
+    <!-- Profile Display (initially hidden) -->
+    <div id="profileDisplay" class="profile-display">
+      <div class="display-profile-header">
+        <img src="" alt="Profile Photo" class="display-profile-photo" id="displayPhoto">
+        <h2 id="displayNameHeader">Your Profile</h2>
+      </div>
+      
+      <div class="profile-info">
+        <div class="info-item">
+          <div class="info-label">Username</div>
+          <div class="info-value" id="displayUsername"></div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Email</div>
+          <div class="info-value" id="displayEmail"></div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Name</div>
+          <div class="info-value" id="displayName"></div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Age</div>
+          <div class="info-value" id="displayAge"></div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Quality</div>
+          <div class="info-value" id="displayQuality"></div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Location</div>
+          <div class="info-value" id="displayLocation"></div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Qualification</div>
+          <div class="info-value" id="displaySize"></div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Domain</div>
+          <div class="info-value" id="displayBomax"></div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Skillset</div>
+          <div class="info-value" id="displayToyHeads"></div>
+        </div>
+        <div class="info-item full-width">
+          <div class="info-label">Bio</div>
+          <div class="info-value" id="displayBio"></div>
+        </div>
+        <div class="info-item full-width">
+          <div class="info-label">Skills & Interests</div>
+          <div class="display-tags" id="displayTags"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Invitations Section -->
+    <div id="invitationsSection" class="invitations-section">
+      <h3>Team Invitations</h3>
+      <div class="invitations-list" id="invitationsList">
+        <div class="no-invitations">You don't have any team invitations yet.</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>Created by we-tried-our-best</p>
+    <div class="creators">
+      <a href="https://github.com/sahil3105kumar" target="_blank">Sahil Kumar</a> | 
+      <a href="https://github.com/sanat24x" target="_blank">Sanat Patidar</a> | 
+      <a href="https://github.com/Sanjanarai44" target="_blank">Sanjana Rai</a>
+    </div>
+  </footer>
+
+  <script>
+// Enhanced tags list with more specific categories
+const predefinedTags = [
+    // Programming Languages
+    'JavaScript', 'Python', 'Java', 'C++', 'C#', 'TypeScript', 'PHP', 'Ruby', 'Go', 'Rust', 'Swift', 'Kotlin',
+    
+    // Web Development
+    'HTML', 'CSS', 'React', 'Angular', 'Vue.js', 'Node.js', 'Express', 'Django', 'Flask', 'Spring Boot',
+    
+    // Mobile Development
+    'Android Development', 'iOS Development', 'React Native', 'Flutter', 'Kotlin Multiplatform',
+    
+    // Game Development
+    'Unity', 'Unreal Engine', 'Game Design', '3D Modeling', 'AR/VR Development',
+    
+    // AI/ML & Data Science
+    'Machine Learning', 'Deep Learning', 'Neural Networks', 'Natural Language Processing', 'Computer Vision',
+    'Data Analysis', 'Data Visualization', 'TensorFlow', 'PyTorch', 'Scikit-learn', 'Big Data',
+    
+    // Blockchain
+    'Blockchain', 'Smart Contracts', 'Solidity', 'Web3', 'Ethereum', 'Cryptocurrency', 'NFTs',
+    
+    // Cloud & DevOps
+    'AWS', 'Azure', 'Google Cloud', 'Docker', 'Kubernetes', 'CI/CD', 'Microservices', 'Serverless',
+    
+    // Cybersecurity
+    'Ethical Hacking', 'Network Security', 'Cryptography', 'Penetration Testing', 'Security Analysis',
+    
+    // UI/UX & Design
+    'UI Design', 'UX Research', 'Figma', 'Adobe XD', 'Wireframing', 'Prototyping', 'User Testing',
+    
+    // Other Skills
+    'Project Management', 'Agile Methodology', 'Scrum', 'Team Leadership', 'Problem Solving', 
+    'Communication', 'Creativity', 'Critical Thinking', 'Marketing', 'Entrepreneurship'
+];
+
+// Store the uploaded photo file
+let profilePhotoFile = null;
+
+// Initialize tags and photo upload
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if user is logged in
+    const currentUser = JSON.parse(localStorage.getItem('teamup_current_user'));
+    if (!currentUser) {
+        showNotification('Please log in first', 'error');
+        // Redirect to login page after a delay
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 2000);
+        return;
+    }
+    
+    // Set username and email from login data
+    document.getElementById('username').value = currentUser.username;
+    document.getElementById('email').value = currentUser.email;
+    
+    // Try to load existing profile
+    loadExistingProfile(currentUser.id);
+    
+    // Load invitations
+    loadInvitations(currentUser.id);
+    
+    const tagsContainer = document.getElementById('tagsContainer');
+    
+    // Create tag elements
+    predefinedTags.forEach(tag => {
+        const tagElement = document.createElement('div');
+        tagElement.className = 'tag';
+        tagElement.textContent = tag;
+        tagElement.dataset.value = tag;
+        
+        tagElement.addEventListener('click', function() {
+            this.classList.toggle('selected');
+        });
+        
+        tagsContainer.appendChild(tagElement);
+    });
+    
+    // Handle form submission
+    const profileForm = document.getElementById('profileForm');
+    profileForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        saveProfile(currentUser.id);
+    });
+    
+    // Handle photo upload
+    const photoInput = document.getElementById('photoInput');
+    photoInput.addEventListener('change', handlePhotoUpload);
+});
+
+// Load existing profile if available
+async function loadExistingProfile(userId) {
+    try {
+        const response = await fetch(`http://localhost:3001/api/profile?userId=${userId}`);
+        
+        if (response.ok) {
+            const profile = await response.json();
+            
+            // Fill form fields with existing data
+            if (profile.name) document.getElementById('name').value = profile.name;
+            if (profile.age) document.getElementById('age').value = profile.age;
+            if (profile.quality) document.getElementById('quality').value = profile.quality;
+            if (profile.location) document.getElementById('location').value = profile.location;
+            if (profile.qualification) document.getElementById('size').value = profile.qualification;
+            if (profile.domain) document.getElementById('bomax').value = profile.domain;
+            if (profile.skillset) document.getElementById('toyHeads').value = profile.skillset;
+            if (profile.bio) document.getElementById('bio').value = profile.bio;
+            
+            // Set profile photo if available
+            if (profile.photo_path) {
+                const photoPreview = document.getElementById('photoPreview');
+                photoPreview.innerHTML = '';
+                
+                const img = document.createElement('img');
+                img.src = `http://localhost:3001${profile.photo_path}`;
+                photoPreview.appendChild(img);
+            }
+            
+            // Select tags if available
+            if (profile.tags && Array.isArray(profile.tags)) {
+                profile.tags.forEach(tag => {
+                    const tagElement = document.querySelector(`.tag[data-value="${tag}"]`);
+                    if (tagElement) {
+                        tagElement.classList.add('selected');
+                    }
+                });
+            }
+            
+            // Show the profile display and hide the form
+            document.getElementById('profileForm').style.display = 'none';
+            document.getElementById('profileDisplay').style.display = 'block';
+            
+            // Update profile display
+            updateProfileDisplay(profile);
+            
+            showNotification('Profile loaded successfully', 'success');
+        }
+    } catch (error) {
+        console.log('No existing profile found or error loading profile:', error);
+    }
+}
+
+// Load invitations for the current user
+async function loadInvitations(userId) {
+    try {
+        const response = await fetch(`http://localhost:3001/api/invitations?userId=${userId}`);
+        
+        if (response.ok) {
+            const invitations = await response.json();
+            
+            const invitationsList = document.getElementById('invitationsList');
+            const invitationsSection = document.getElementById('invitationsSection');
+            
+            if (invitations.length > 0) {
+                invitationsList.innerHTML = '';
+                invitationsSection.style.display = 'block';
+                
+                invitations.forEach(invitation => {
+                    const invitationCard = document.createElement('div');
+                    invitationCard.className = 'invitation-card';
+                    invitationCard.innerHTML = `
+                        <div class="invitation-header">
+                            <div class="invitation-sender">From: ${invitation.sender_name}</div>
+                            <div class="invitation-team">Team: ${invitation.team_name}</div>
+                        </div>
+                        <p>You've been invited to join the team "${invitation.team_name}"</p>
+                        <div class="invitation-actions">
+                            <button class="invitation-btn accept" data-id="${invitation.id}">Accept</button>
+                            <button class="invitation-btn reject" data-id="${invitation.id}">Reject</button>
+                        </div>
+                    `;
+                    
+                    invitationsList.appendChild(invitationCard);
+                });
+                
+                // Add event listeners to buttons
+                document.querySelectorAll('.invitation-btn.accept').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        handleInvitationResponse(this.dataset.id, 'accept');
+                    });
+                });
+                
+                document.querySelectorAll('.invitation-btn.reject').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        handleInvitationResponse(this.dataset.id, 'reject');
+                    });
+                });
+            } else {
+                invitationsSection.style.display = 'block';
+                invitationsList.innerHTML = '<div class="no-invitations">You don\'t have any team invitations yet.</div>';
+            }
+        }
+    } catch (error) {
+        console.error('Error loading invitations:', error);
+    }
+}
+
+// Handle invitation response (accept or reject)
+async function handleInvitationResponse(invitationId, response) {
+    try {
+        const currentUser = JSON.parse(localStorage.getItem('teamup_current_user'));
+        
+        const result = await fetch(`http://localhost:3001/api/invitations/${invitationId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: currentUser.id,
+                response: response
+            })
+        });
+        
+        const data = await result.json();
+        
+        if (result.ok) {
+            if (response === 'accept') {
+                showNotification('Team invitation accepted!', 'success');
+                // Redirect to workspace after a short delay
+                setTimeout(() => {
+                    window.location.href = 'workspace.html';
+                }, 1500);
+            } else {
+                showNotification('Team invitation rejected.', 'success');
+                // Reload invitations to update the list
+                loadInvitations(currentUser.id);
+            }
+        } else {
+            showNotification('Error processing invitation: ' + data.error, 'error');
+        }
+    } catch (error) {
+        showNotification('Network error: ' + error.message, 'error');
+    }
+}
+
+// Handle photo upload
+function handlePhotoUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    if (!file.type.match('image.*')) {
+        showNotification('Please select an image file.', 'error');
+        return;
+    }
+    
+    // Store the file for later upload
+    profilePhotoFile = file;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const photoPreview = document.getElementById('photoPreview');
+        photoPreview.innerHTML = '';
+        
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        photoPreview.appendChild(img);
+    };
+    
+    reader.readAsDataURL(file);
+}
+
+// Save profile function
+async function saveProfile(userId) {
+    // Get form values
+    const name = document.getElementById('name').value;
+    const age = document.getElementById('age').value;
+    const quality = document.getElementById('quality').value;
+    const location = document.getElementById('location').value;
+    const qualification = document.getElementById('size').value;
+    const domain = document.getElementById('bomax').value;
+    const skillset = document.getElementById('toyHeads').value;
+    const bio = document.getElementById('bio').value;
+    
+    // Get selected tags
+    const selectedTags = [];
+    document.querySelectorAll('.tag.selected').forEach(tag => {
+        selectedTags.push(tag.dataset.value);
+    });
+    
+    // Create form data for file upload
+    const formData = new FormData();
+    formData.append('userId', userId);
+    formData.append('name', name);
+    formData.append('age', age);
+    formData.append('quality', quality);
+    formData.append('location', location);
+    formData.append('qualification', qualification);
+    formData.append('domain', domain);
+    formData.append('skillset', skillset);
+    formData.append('bio', bio);
+    formData.append('tags', JSON.stringify(selectedTags));
+    
+    // Add photo file if selected
+    if (profilePhotoFile) {
+        formData.append('photo', profilePhotoFile);
+    }
+    
+    try {
+        const response = await fetch('http://localhost:3001/api/profile', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showNotification('Profile saved successfully!', 'success');
+            
+            // Reload the profile to get updated data including photo path
+            loadExistingProfile(userId);
+            
+        } else {
+            showNotification('Error saving profile: ' + data.error, 'error');
+        }
+    } catch (error) {
+        showNotification('Network error: ' + error.message, 'error');
+    }
+}
+
+// Update profile display
+function updateProfileDisplay(profileData) {
+    // Update profile photo in display
+    const displayPhoto = document.getElementById('displayPhoto');
+    if (profileData.photo_path) {
+        displayPhoto.src = `http://localhost:3001${profileData.photo_path}`;
+        displayPhoto.style.display = 'block';
+    } else {
+        displayPhoto.style.display = 'none';
+    }
+    
+    // Update header with name
+    document.getElementById('displayNameHeader').textContent = profileData.name + "'s Profile";
+    
+    // Update display fields
+    document.getElementById('displayUsername').textContent = document.getElementById('username').value;
+    document.getElementById('displayEmail').textContent = document.getElementById('email').value;
+    document.getElementById('displayName').textContent = profileData.name || 'Not specified';
+    document.getElementById('displayAge').textContent = profileData.age || 'Not specified';
+    document.getElementById('displayQuality').textContent = profileData.quality || 'Not specified';
+    document.getElementById('displayLocation').textContent = profileData.location || 'Not specified';
+    document.getElementById('displaySize').textContent = profileData.qualification || 'Not specified';
+    document.getElementById('displayBomax').textContent = profileData.domain || 'Not specified';
+    document.getElementById('displayToyHeads').textContent = profileData.skillset || 'Not specified';
+    document.getElementById('displayBio').textContent = profileData.bio || 'Not specified';
+    
+    // Update tags display
+    const tagsDisplay = document.getElementById('displayTags');
+    tagsDisplay.innerHTML = '';
+    if (profileData.tags && profileData.tags.length > 0) {
+        profileData.tags.forEach(tag => {
+            const tagElement = document.createElement('div');
+            tagElement.className = 'display-tag';
+            tagElement.textContent = tag;
+            tagsDisplay.appendChild(tagElement);
+        });
+    } else {
+        tagsDisplay.innerHTML = '<div class="info-value">No tags selected</div>';
+    }
+    
+    // Scroll to the top of the profile display
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Notification system
+function showNotification(message, type = 'success') {
+    // Remove any existing notifications
+    const existingNotification = document.querySelector('.notification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
+    // Create new notification
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateY(-20px)';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+</script>
+</body>
+</html>

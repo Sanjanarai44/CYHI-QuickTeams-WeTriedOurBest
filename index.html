@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TeamUp</title>
+  <style>
+    /* 🎨 Dark + Neon Theme */
+    :root {
+      --primary: #0f172a;   /* Dark Navy Black */
+      --secondary: #38bdf8; /* Neon Sky Blue */
+      --accent: #f43f5e;    /* Neon Pink */
+      --text: #e5e7eb;      /* Light Gray Text */
+      --background: #0a0e1a; /* Dark Background */
+      --white: #ffffff;
+    }
+
+    /* Reset */
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: var(--background);
+      color: var(--text);
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: var(--primary);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .nav-left {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: var(--secondary);
+    }
+    .nav-center {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--accent);
+      letter-spacing: 2px;
+    }
+    .nav-right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .login-btn, .logout-btn {
+      padding: 0.5rem 1rem;
+      color: var(--white);
+      border: none;
+      border-radius: 5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .login-btn {
+      background: var(--accent);
+    }
+    .logout-btn {
+      background: #374151;
+    }
+    .login-btn:hover {
+      background: var(--secondary);
+      color: var(--primary);
+    }
+    .logout-btn:hover {
+      background: #ef4444;
+    }
+
+    /* Fade Sections */
+    .fade-section {
+      text-align: center;
+      padding: 80px 20px;
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+    .fade-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* About (hero with faded bg) */
+    .about {
+      min-height: 70vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      color: white;
+      background: linear-gradient(rgba(10, 14, 26, 0.85), rgba(10, 14, 26, 0.85)), 
+                  url("https://www.highspot.com/wp-content/uploads/Hackathon-blog-header.png");
+      background-size: cover;
+      background-position: center 30%;
+      background-repeat: no-repeat;
+    }
+    .about-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      padding: 20px;
+      margin-top: -20px;
+    }
+    .about h2 {
+      font-size: 2.5rem;
+      color: var(--secondary);
+      margin-top: 0;
+    }
+    .about p {
+      font-size: 1.15rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    .highlight {
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    /* Get Started */
+    .get-started {
+      padding: 60px 20px;
+      background-color: #0d0d1a;
+      min-height: 50vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .get-started h2 {
+      font-size: 2.2rem;
+      color: var(--accent);
+      margin-top: 0;
+    }
+    .get-started p {
+      max-width: 650px;
+      margin: 1rem auto 2rem;
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+    .start-btn {
+      padding: 0.75rem 1.5rem;
+      background: var(--accent);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 0 10px var(--accent);
+      font-size: 1.1rem;
+    }
+    .start-btn:hover {
+      background: var(--secondary);
+      color: var(--primary);
+      box-shadow: 0 0 15px var(--secondary);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      background: var(--primary);
+      color: var(--text);
+      border-top: 1px solid #2d3748;
+    }
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: 0.3s;
+    }
+    footer a:hover {
+      color: var(--secondary);
+    }
+    
+    /* Debug Info */
+    .debug-info {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-left">Team<span>Up</span></div>
+    <div class="nav-center">TEAMUP</div>
+    <div class="nav-right">
+      <a href="login.html" class="login-btn" id="loginBtn">Login/SignUp</a>
+      <button class="logout-btn" id="logoutBtn" style="display: none;">Logout</button>
+    </div>
+  </nav>
+
+  <!-- About Section -->
+  <section class="about fade-section">
+    <div class="about-content">
+      <h2>About TeamUp</h2>
+      <p>
+        In today's fast-paced world of <span class="highlight">innovation and creativity</span>, finding the right teammates is often the hardest part of starting something great.  
+      </p>
+      <p>
+        TeamUp is designed to bridge that gap by connecting <span class="highlight">coders, designers, entrepreneurs, and thinkers</span> who share a common passion for building, learning, and competing.
+      </p>
+      <p>
+        Think of TeamUp as your launchpad—where brilliant ideas meet the perfect teammates to bring them to life.
+      </p>
+    </div>
+  </section>
+
+  <!-- Get Started Section -->
+  <section class="get-started fade-section">
+    <h2>Get Started</h2>
+    <p>
+      Collaboration starts with a single step—and you've already taken it by landing here.  
+    </p>
+    <p>
+      With TeamUp, you can create your profile, showcase your strengths, and discover people who complement your skills.  
+    </p>
+    <p>
+      Whether you're a beginner eager to learn or an experienced innovator looking for a challenge, this is your space to <span class="highlight">connect, collaborate, and create</span>.  
+    </p>
+    <button class="start-btn" id="startBtn">Start Now</button>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>Created by we-tried-our-best</p>
+    <div class="creators">
+      <a href="https://github.com/sahil3105kumar" target="_blank">Sahil Kumar</a> | 
+      <a href="https://github.com/sanat24x" target="_blank">Sanat Patidar</a> | 
+      <a href="https://github.com/Sanjanarai44" target="_blank">Sanjana Rai</a>
+    </div>
+  </footer>
+
+  <div class="debug-info" id="debugInfo">Debug info will appear here</div>
+
+  <script>
+    // Check login status and update UI
+    function checkLoginStatus() {
+      // For demonstration, let's check if we have a user in localStorage
+      const currentUser = localStorage.getItem('teamup_current_user');
+      const loginBtn = document.getElementById('loginBtn');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const startBtn = document.getElementById('startBtn');
+      const debugInfo = document.getElementById('debugInfo');
+      
+      // Update debug info
+      debugInfo.innerHTML = `Current user: ${currentUser || 'Not logged in'}`;
+      
+      if (currentUser) {
+        try {
+          // Parse the user object to extract just the username
+          const userObj = JSON.parse(currentUser);
+          const username = userObj.username || 'User';
+          loginBtn.textContent = `Hi, ${username}`;
+        } catch (e) {
+          // If parsing fails, use the raw string
+          loginBtn.textContent = `Hi, ${currentUser}`;
+        }
+        logoutBtn.style.display = 'inline-block';
+        startBtn.onclick = function() {
+          window.location.href = 'profile.html';
+        };
+      } else {
+        loginBtn.textContent = 'Login/SignUp';
+        logoutBtn.style.display = 'none';
+        startBtn.onclick = function() {
+          window.location.href = 'login.html';
+        };
+      }
+    }
+    
+    // Logout function
+    function logout() {
+      localStorage.removeItem('teamup_current_user');
+      checkLoginStatus();
+      alert('You have been logged out successfully!');
+    }
+    
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set up logout button
+      document.getElementById('logoutBtn').addEventListener('click', logout);
+      
+      // Check login status
+      checkLoginStatus();
+      
+      // For demonstration, let's add a way to simulate login
+      const debugInfo = document.getElementById('debugInfo');
+      debugInfo.innerHTML += '<br>Click here to simulate login';
+      debugInfo.style.cursor = 'pointer';
+      debugInfo.onclick = function() {
+        if (!localStorage.getItem('teamup_current_user')) {
+          // Store user as a JSON string
+          const demoUser = JSON.stringify({
+            id: 3,
+            username: "Helly",
+            email: "helly123@gmail.com",
+            created_at: "2025-09-06 01:54:49"
+          });
+          localStorage.setItem('teamup_current_user', demoUser);
+          checkLoginStatus();
+        }
+      };
+      
+      // Fade in / out on scroll
+      const sections = document.querySelectorAll(".fade-section");
+      
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+            } else {
+              entry.target.classList.remove("visible");
+            }
+          });
+        },
+        { threshold: 0.3 } // 30% visibility triggers fade
+      );
+      
+      sections.forEach((section) => {
+        observer.observe(section);
+      });
+    });
+  </script>
+</body>
+</html>
