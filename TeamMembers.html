@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TeamUp - Find Partners</title>
   <style>
-    /* Your existing CSS remains exactly the same */
     :root {
       --primary: #0f172a;
       --secondary: #38bdf8;
@@ -477,7 +476,7 @@
   </div>
 
   <script>
-    // Enhanced tags list with more specific categories (same as profile page)
+    // Enhanced tags list with more specific categories
     const predefinedTags = [
       // Programming Languages
       'JavaScript', 'Python', 'Java', 'C++', 'C#', 'TypeScript', 'PHP', 'Ruby', 'Go', 'Rust', 'Swift', 'Kotlin',
@@ -512,75 +511,83 @@
       'Communication', 'Creativity', 'Critical Thinking', 'Marketing', 'Entrepreneurship'
     ];
 
-    // Get users from localStorage (signed up users)
-    function getSignedUpUsers() {
+    // Get users from backend API
+    async function getUsersFromBackend() {
       try {
-        const users = JSON.parse(localStorage.getItem('teamup_users') || '[]');
-        const currentUser = JSON.parse(sessionStorage.getItem('teamup_current_user') || '{}');
+        const currentUser = getCurrentUser();
+        if (!currentUser || !currentUser.id) {
+          console.error('No current user found');
+          return [];
+        }
+
+        const response = await fetch(`http://localhost:3001/api/users?current_user_id=${currentUser.id}`);
         
-        // Filter out the current user and add profile data if available
-        return users
-          .filter(user => user.username !== currentUser.username)
-          .map(user => {
-            // Try to get profile data if it exists
-            const profiles = JSON.parse(localStorage.getItem('teamup_profiles') || '[]');
-            const userProfile = profiles.find(profile => profile.username === user.username) || {};
-            
-            // Check availability status
-            const availability = localStorage.getItem(`teamup_availability_${user.username}`);
-            
-            return {
-              id: user.id,
-              username: user.username,
-              displayName: `@${user.username}`,
-              name: userProfile.name || user.username,
-              role: userProfile.size || 'Team Member',
-              avatar: userProfile.photoData || 'https://via.placeholder.com/100?text=' + user.username.charAt(0).toUpperCase(),
-              tags: userProfile.tags || ['New Member'],
-              email: user.email || `${user.username}@example.com`,
-              available: availability !== 'unavailable' // Default to available if not set
-            };
-          });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const users = await response.json();
+        return users.map(user => ({
+          id: user.id,
+          username: user.username,
+          displayName: user.name || `@${user.username}`,
+          name: user.name || user.username,
+          role: user.domain || 'Team Member',
+          avatar: user.avatar || `https://via.placeholder.com/100?text=${user.username.charAt(0).toUpperCase()}`,
+          tags: user.tags || [],
+          email: user.email || `${user.username}@example.com`,
+          available: user.available !== false,
+          skillset: user.skillset || '',
+          location: user.location || '',
+          qualification: user.qualification || ''
+        }));
       } catch (error) {
-        console.error('Error loading users:', error);
+        console.error('Error fetching users from backend:', error);
+        // Return empty array if API call fails
         return [];
       }
     }
 
-    // Get current user's tags from profile
-    function getCurrentUserTags() {
+    // Get current user's profile from backend
+    async function getCurrentUserProfile() {
       try {
-        const currentUser = JSON.parse(sessionStorage.getItem('teamup_current_user') || '{}');
-        const profiles = JSON.parse(localStorage.getItem('teamup_profiles') || '[]');
-        const userProfile = profiles.find(profile => profile.username === currentUser.username) || {};
+        const currentUser = getCurrentUser();
+        if (!currentUser || !currentUser.id) {
+          return { tags: [] };
+        }
+
+        const response = await fetch(`http://localhost:3001/api/profile?userId=${currentUser.id}`);
         
-        return userProfile.tags || [];
+        if (response.ok) {
+          const profile = await response.json();
+          return profile;
+        }
+        return { tags: [] };
       } catch (error) {
-        console.error('Error loading current user tags:', error);
-        return [];
+        console.error('Error fetching current user profile:', error);
+        return { tags: [] };
       }
     }
 
-    // Get current user info
+    // Get current user info from localStorage
     function getCurrentUser() {
       try {
-        return JSON.parse(sessionStorage.getItem('teamup_current_user') || '{}');
+        const userData = localStorage.getItem('teamup_current_user');
+        return userData ? JSON.parse(userData) : {};
       } catch (error) {
         console.error('Error loading current user:', error);
         return {};
       }
     }
 
-    // Calculate match percentage using Jaccard similarity - FIXED VERSION
-    function calculateMatchPercentage(userTags) {
-      const currentUserTags = getCurrentUserTags();
+    // Calculate match percentage using Jaccard similarity
+    function calculateMatchPercentage(userTags, currentUserTags) {
+      if (!currentUserTags || currentUserTags.length === 0 || !userTags || userTags.length === 0) {
+        return 0;
+      }
       
-      // If either user has no tags, return 0%
-      if (currentUserTags.length === 0 || userTags.length === 0) return 0;
-      
-      // Convert to sets for easier comparison
-      const currentUserTagSet = new Set(currentUserTags);
-      const userTagSet = new Set(userTags);
+      const currentUserTagSet = new Set(currentUserTags.map(tag => tag.toLowerCase()));
+      const userTagSet = new Set(userTags.map(tag => tag.toLowerCase()));
       
       // Count matching tags (intersection)
       let matchingCount = 0;
@@ -591,23 +598,16 @@
       }
       
       // Count unique tags across both users (union)
-      const allUniqueTags = new Set([...currentUserTags, ...userTags]);
+      const allUniqueTags = new Set([...currentUserTags.map(tag => tag.toLowerCase()), ...userTags.map(tag => tag.toLowerCase())]);
       
       // Jaccard similarity = intersection / union
       const percentage = (matchingCount / allUniqueTags.size) * 100;
-       
-      console.log('Current user tags:', currentUserTags);
-      console.log('Other user tags:', userTags);
-      console.log('Matching count:', matchingCount);
-      console.log('Union size:', allUniqueTags.size);
-      console.log('Percentage:', percentage);
-  
       
       // Return rounded percentage (capped at 100)
       return Math.min(Math.round(percentage), 100);
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', async function() {
       const tagsFilter = document.getElementById('tagsFilter');
       const resultsGrid = document.getElementById('resultsGrid');
       const searchInput = document.getElementById('searchInput');
@@ -627,8 +627,9 @@
       const teamModalConfirm = document.getElementById('teamModalConfirm');
       
       let selectedTags = [];
-      let allUsers = getSignedUpUsers();
+      let allUsers = await getUsersFromBackend();
       const currentUser = getCurrentUser();
+      let currentUserProfile = await getCurrentUserProfile();
       let selectedUser = null;
       
       // Create tag filters
@@ -657,23 +658,31 @@
         
         // Filter users based on search, selected tags, and availability
         let filteredUsers = allUsers.filter(user => {
-          // Skip unavailable users
-          if (!user.available) return false;
+          // Skip the current user and unavailable users
+          if (user.id === currentUser.id || !user.available) return false;
           
-          const matchesSearch = user.name.toLowerCase().includes(searchTerm) || 
+          // Check if user matches search term
+          const matchesSearch = searchTerm === '' || 
+                               user.name.toLowerCase().includes(searchTerm) || 
                                user.username.toLowerCase().includes(searchTerm) ||
                                user.role.toLowerCase().includes(searchTerm) ||
+                               user.skillset.toLowerCase().includes(searchTerm) ||
                                user.tags.some(tag => tag.toLowerCase().includes(searchTerm));
           
+          // Check if user matches selected tags (if any tags are selected)
           const matchesTags = selectedTags.length === 0 || 
-                             selectedTags.some(tag => user.tags.includes(tag));
+                             selectedTags.some(selectedTag => 
+                               user.tags.some(userTag => 
+                                 userTag.toLowerCase() === selectedTag.toLowerCase()
+                               )
+                             );
           
           return matchesSearch && matchesTags;
         });
         
         // Calculate match percentage for each user
         filteredUsers.forEach(user => {
-          user.matchPercentage = calculateMatchPercentage(user.tags);
+          user.matchPercentage = calculateMatchPercentage(user.tags, currentUserProfile.tags);
         });
         
         // Sort users by match percentage (highest first)
@@ -701,19 +710,20 @@
           const userCard = document.createElement('div');
           userCard.className = 'user-card';
           
-          // Calculate match percentage
-          const matchPercentage = user.matchPercentage || calculateMatchPercentage(user.tags);
+          const matchPercentage = user.matchPercentage || 0 ;
           
           userCard.innerHTML = `
-            <!-- Match percentage badge in top right corner -->
-            <div class="match-percentage">${matchPercentage}% Match</div>
+            <!-- <div class="match-percentage">${matchPercentage}% Match</div> -->
             
-            <img src="${user.avatar}" alt="${user.name}" class="profile-img">
+            <img src="${user.avatar}" alt="${user.name}" class="profile-img" onerror="this.src='https://via.placeholder.com/100?text=${user.username.charAt(0).toUpperCase()}'">
             <a href="#" class="profile-link">${user.displayName}</a>
             <p class="user-role">${user.role}</p>
             <div class="user-tags">
               ${user.tags.slice(0, 4).map(tag => `<span class="user-tag">${tag}</span>`).join('')}
               ${user.tags.length > 4 ? `<span class="user-tag">+${user.tags.length - 4}</span>` : ''}
+            </div>
+            <div style="margin-bottom: 0.5rem; font-size: 0.8rem; color: #94a3b8;">
+              ${user.location ? `📍 ${user.location}` : ''}
             </div>
             <button class="connect-btn" data-userid="${user.id}">Connect</button>
           `;
@@ -756,14 +766,11 @@
       // Handle connection confirmation
       modalConfirm.addEventListener('click', function() {
         hideConnectionModal();
-        
-        // In a real app, this would send a connection request to the server
-        // For now, we'll simulate it by showing the team creation modal
         showTeamModal();
       });
       
       // Handle team creation
-      teamModalConfirm.addEventListener('click', function() {
+      teamModalConfirm.addEventListener('click', async function() {
         const teamName = teamNameInput.value.trim();
         const teamSize = parseInt(teamSizeInput.value);
         
@@ -777,29 +784,33 @@
           return;
         }
         
-        // Create team object
-        const team = {
-          id: Date.now().toString(),
-          name: teamName,
-          size: teamSize,
-          members: [currentUser.username, selectedUser.username],
-          pending: [selectedUser.username], // Users who haven't accepted yet
-          createdBy: currentUser.username,
-          createdAt: new Date().toISOString()
-        };
-        
-        // Save team to localStorage
-        const teams = JSON.parse(localStorage.getItem('teamup_teams') || '[]');
-        teams.push(team);
-        localStorage.setItem('teamup_teams', JSON.stringify(teams));
-        
-        // Show success message
-        alert(`Team "${teamName}" created successfully! An invitation has been sent to ${selectedUser.displayName}.`);
-        
-        hideTeamModal();
-        
-        // Redirect to workspace
-        window.location.href = 'workspace.html';
+        try {
+          // Create team via backend API
+          const response = await fetch('http://localhost:3001/api/teams', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              name: teamName,
+              size: teamSize,
+              created_by: currentUser.id,
+              members: [currentUser.id, selectedUser.id]
+            })
+          });
+          
+          if (response.ok) {
+            const teamData = await response.json();
+            alert(`Team "${teamName}" created successfully!`);
+            hideTeamModal();
+            window.location.href = 'workspace.html';
+          } else {
+            const errorData = await response.json();
+            alert(`Error creating team: ${errorData.error}`);
+          }
+        } catch (error) {
+          alert('Network error creating team: ' + error.message);
+        }
       });
       
       // Modal cancel buttons
@@ -816,9 +827,6 @@
         }
       });
       
-      // Initial load
-      filterUsers();
-      
       // Event listeners
       searchBtn.addEventListener('click', filterUsers);
       searchInput.addEventListener('keyup', function(event) {
@@ -827,21 +835,8 @@
         }
       });
       
-      // Show message if no users are found
-      if (allUsers.length === 0) {
-        resultsGrid.innerHTML = `
-          <div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
-            <p>No other users have signed up yet</p>
-            <p>Share TeamUp with others to build your network!</p>
-          </div>
-        `;
-      }
-      
-      // Periodically check for new users (simulating real-time updates)
-      setInterval(() => {
-        allUsers = getSignedUpUsers();
-        filterUsers();
-      }, 5000);
+      // Initial load
+      filterUsers();
     });
   </script>
 </body>

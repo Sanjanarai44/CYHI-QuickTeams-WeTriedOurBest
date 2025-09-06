@@ -5,18 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TeamUp - Workspace</title>
   <style>
-    /* 🎨 Dark + Neon Theme - Consistent with main page */
+    /* Your existing CSS remains exactly the same */
     :root {
-      --primary: #0f172a;   /* Dark Navy Black */
-      --secondary: #38bdf8; /* Neon Sky Blue */
-      --accent: #f43f5e;    /* Neon Pink */
-      --text: #e5e7eb;      /* Light Gray Text */
-      --background: #0a0e1a; /* Dark Background */
+      --primary: #0f172a;
+      --secondary: #38bdf8;
+      --accent: #f43f5e;
+      --text: #e5e7eb;
+      --background: #0a0e1a;
       --white: #ffffff;
-      --card-bg: #1e293b;   /* Card background */
+      --card-bg: #1e293b;
     }
 
-    /* Reset */
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, sans-serif;
@@ -27,7 +26,6 @@
       flex-direction: column;
     }
 
-    /* Navbar */
     .navbar {
       display: flex;
       justify-content: space-between;
@@ -72,7 +70,6 @@
       color: var(--primary);
     }
 
-    /* Availability Toggle in Navbar */
     .nav-toggle {
       display: flex;
       align-items: center;
@@ -100,7 +97,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: #ef4444; /* Red for unavailable */
+      background-color: #ef4444;
       transition: .4s;
       border-radius: 20px;
     }
@@ -116,7 +113,7 @@
       border-radius: 50%;
     }
     .toggle-checkbox:checked + .toggle-slider {
-      background-color: #10b981; /* Green for available */
+      background-color: #10b981;
     }
     .toggle-checkbox:checked + .toggle-slider:before {
       transform: translateX(20px);
@@ -133,7 +130,6 @@
       background-color: #ef4444;
     }
 
-    /* Main Workspace Container */
     .workspace-container {
       display: flex;
       flex: 1;
@@ -141,7 +137,6 @@
       gap: 2rem;
     }
 
-    /* Teams Section (40% width) */
     .teams-section {
       width: 40%;
       display: flex;
@@ -215,7 +210,6 @@
       background: var(--secondary);
     }
 
-    /* People Section (60% width) */
     .people-section {
       width: 60%;
     }
@@ -275,7 +269,6 @@
       color: var(--text);
     }
 
-    /* Footer */
     footer {
       text-align: center;
       padding: 1.5rem;
@@ -295,7 +288,6 @@
       color: var(--secondary);
     }
 
-    /* Responsive Design */
     @media (max-width: 900px) {
       .workspace-container {
         flex-direction: column;
@@ -319,6 +311,90 @@
         flex-direction: column;
         gap: 0.5rem;
       }
+    }
+
+    /* Invitations Section */
+    .invitations-section {
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-top: 2rem;
+    }
+
+    .invitations-section h3 {
+      color: var(--accent);
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .invitations-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .invitation-card {
+      background: var(--primary);
+      padding: 1rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--secondary);
+    }
+
+    .invitation-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .invitation-sender {
+      font-weight: 600;
+      color: var(--secondary);
+    }
+
+    .invitation-team {
+      font-style: italic;
+      color: var(--text);
+    }
+
+    .invitation-actions {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 0.8rem;
+    }
+
+    .invitation-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .invitation-btn.accept {
+      background: var(--secondary);
+      color: var(--primary);
+    }
+
+    .invitation-btn.accept:hover {
+      background: #0ea5e9;
+    }
+
+    .invitation-btn.reject {
+      background: #6b7280;
+      color: var(--text);
+    }
+
+    .invitation-btn.reject:hover {
+      background: #9ca3af;
+    }
+
+    .no-invitations {
+      text-align: center;
+      color: var(--text);
+      padding: 1rem;
     }
   </style>
 </head>
@@ -346,12 +422,19 @@
     <section class="teams-section">
       <h2>Your Teams</h2>
       <div class="teams-list" id="teamsList">
-        <!-- Teams will be dynamically inserted here -->
         <div class="empty-state">
-          <p>You haven't joined any teams yet</p>
-          <p>Click "Find Team Members" to start collaborating!</p>
+          <p>Loading your teams...</p>
         </div>
       </div>
+
+      <!-- Team Invitations Section -->
+      <div class="invitations-section" id="invitationsSection" style="display: none;">
+        <h3>Team Invitations</h3>
+        <div class="invitations-list" id="invitationsList">
+          <div class="no-invitations">Loading invitations...</div>
+        </div>
+      </div>
+
       <button class="new-team-btn" onclick="window.location.href='TeamMembers.html'">Find Team Members</button>
     </section>
 
@@ -359,10 +442,8 @@
     <section class="people-section">
       <h2>People You Worked With</h2>
       <div class="people-grid" id="peopleGrid">
-        <!-- People will be dynamically inserted here -->
         <div class="empty-state" style="grid-column: 1 / -1;">
-          <p>You haven't collaborated with anyone yet</p>
-          <p>Join teams to connect with other members!</p>
+          <p>Loading your collaborators...</p>
         </div>
       </div>
     </section>
@@ -379,87 +460,155 @@
   </footer>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', async function() {
       const teamsList = document.getElementById('teamsList');
       const peopleGrid = document.getElementById('peopleGrid');
       const availabilityToggle = document.getElementById('availabilityToggle');
       const statusIndicator = document.getElementById('statusIndicator');
       const toggleLabel = document.querySelector('.toggle-label');
+      const invitationsSection = document.getElementById('invitationsSection');
+      const invitationsList = document.getElementById('invitationsList');
       
-      // Load availability status from localStorage
-      const currentUser = localStorage.getItem('teamup_current_user');
-      const savedAvailability = localStorage.getItem(`teamup_availability_${currentUser}`);
-      if (savedAvailability === 'unavailable') {
-        availabilityToggle.checked = false;
-        updateAvailabilityStatus(false);
-      } else {
-        availabilityToggle.checked = true;
-        updateAvailabilityStatus(true);
+      // Get current user
+      const currentUser = JSON.parse(localStorage.getItem('teamup_current_user'));
+      if (!currentUser || !currentUser.id) {
+        showNotification('Please log in first', 'error');
+        setTimeout(() => window.location.href = 'login.html', 2000);
+        return;
       }
       
-      // Toggle availability
-      availabilityToggle.addEventListener('change', function() {
-        updateAvailabilityStatus(this.checked);
-        // Save to localStorage with user-specific key
-        localStorage.setItem(`teamup_availability_${currentUser}`, this.checked ? 'available' : 'unavailable');
-        
-        // Show notification
-        showNotification(`You are now ${this.checked ? 'available' : 'unavailable'} for team matching`);
-      });
-      
-      function updateAvailabilityStatus(isAvailable) {
-        if (isAvailable) {
-          toggleLabel.textContent = 'Available';
-          statusIndicator.className = 'status-indicator status-available';
-        } else {
-          toggleLabel.textContent = 'Unavailable';
-          statusIndicator.className = 'status-indicator status-unavailable';
-        }
-      }
-      
-      // Load teams and people data
-      loadTeamsAndPeople();
+      // Load initial data
+      await loadAvailabilityStatus();
+      await loadTeamsAndPeople();
+      await loadInvitations();
       
       // Set up periodic refresh
-      setInterval(loadTeamsAndPeople, 3000);
+      setInterval(loadTeamsAndPeople, 10000);
+      setInterval(loadInvitations, 5000);
+      
+      // Toggle availability
+      availabilityToggle.addEventListener('change', async function() {
+        await updateAvailabilityStatus(this.checked);
+      });
     });
     
-    // Load teams and people data from localStorage
-    function loadTeamsAndPeople() {
-      const teamsList = document.getElementById('teamsList');
-      const peopleGrid = document.getElementById('peopleGrid');
-      const currentUser = localStorage.getItem('teamup_current_user');
+    // Load availability status from backend
+    async function loadAvailabilityStatus() {
+      const currentUser = JSON.parse(localStorage.getItem('teamup_current_user'));
       
-      // Get teams data
-      const teams = JSON.parse(localStorage.getItem('teamup_teams') || '[]');
-      const userTeams = teams.filter(team => 
-        team.members && team.members.includes(currentUser)
-      );
-      
-      // Get profiles data
-      const profiles = JSON.parse(localStorage.getItem('teamup_profiles') || '[]');
-      
-      // Get people you've collaborated with (all members of your teams except yourself)
-      const collaboratedUsers = [];
-      userTeams.forEach(team => {
-        if (team.members) {
-          team.members.forEach(member => {
-            if (member !== currentUser && !collaboratedUsers.includes(member)) {
-              collaboratedUsers.push(member);
-            }
-          });
+      try {
+        // Get current user's profile to check availability
+        const response = await fetch(`http://localhost:3001/api/profile?userId=${currentUser.id}`);
+        if (response.ok) {
+          const profile = await response.json();
+          const isAvailable = profile.availability !== 0;
+          
+          document.getElementById('availabilityToggle').checked = isAvailable;
+          updateUIavailabilityStatus(isAvailable);
         }
-      });
+      } catch (error) {
+        console.error('Error loading availability status:', error);
+      }
+    }
+    
+    // Update availability status on backend
+    async function updateAvailabilityStatus(isAvailable) {
+      const currentUser = JSON.parse(localStorage.getItem('teamup_current_user'));
       
-      // Display teams
-      if (userTeams.length > 0) {
+      try {
+        const response = await fetch(`http://localhost:3001/api/users/${currentUser.id}/availability`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ available: isAvailable })
+        });
+        
+        if (response.ok) {
+          updateUIavailabilityStatus(isAvailable);
+          showNotification(`You are now ${isAvailable ? 'available' : 'unavailable'} for team matching`);
+        } else {
+          const errorData = await response.json();
+          showNotification(`Error: ${errorData.error}`, 'error');
+          // Revert the toggle
+          document.getElementById('availabilityToggle').checked = !isAvailable;
+        }
+      } catch (error) {
+        showNotification('Network error updating availability', 'error');
+        document.getElementById('availabilityToggle').checked = !isAvailable;
+      }
+    }
+    
+    function updateUIavailabilityStatus(isAvailable) {
+      const toggleLabel = document.querySelector('.toggle-label');
+      const statusIndicator = document.getElementById('statusIndicator');
+      
+      if (isAvailable) {
+        toggleLabel.textContent = 'Available';
+        statusIndicator.className = 'status-indicator status-available';
+      } else {
+        toggleLabel.textContent = 'Unavailable';
+        statusIndicator.className = 'status-indicator status-unavailable';
+      }
+    }
+    
+    // Load teams and people data from backend
+    async function loadTeamsAndPeople() {
+      const currentUser = JSON.parse(localStorage.getItem('teamup_current_user'));
+      
+      try {
+        // Get user's teams
+        const teamsResponse = await fetch(`http://localhost:3001/api/users/${currentUser.id}/teams`);
+        if (teamsResponse.ok) {
+          const teams = await teamsResponse.json();
+          displayTeams(teams);
+          
+          // Get collaborators from all teams
+          const collaborators = await getCollaborators(teams, currentUser.id);
+          displayCollaborators(collaborators);
+        }
+      } catch (error) {
+        console.error('Error loading teams:', error);
+        showNotification('Error loading teams data', 'error');
+      }
+    }
+    
+    // Get collaborators from teams
+    async function getCollaborators(teams, currentUserId) {
+      const collaborators = new Map();
+      
+      for (const team of teams) {
+        try {
+          const membersResponse = await fetch(`http://localhost:3001/api/teams/${team.id}/members`);
+          if (membersResponse.ok) {
+            const members = await membersResponse.json();
+            
+            members.forEach(member => {
+              if (member.id !== currentUserId && !collaborators.has(member.id)) {
+                collaborators.set(member.id, member);
+              }
+            });
+          }
+        } catch (error) {
+          console.error('Error loading team members:', error);
+        }
+      }
+      
+      return Array.from(collaborators.values());
+    }
+    
+    // Display teams
+    function displayTeams(teams) {
+      const teamsList = document.getElementById('teamsList');
+      
+      if (teams.length > 0) {
         teamsList.innerHTML = '';
-        userTeams.forEach(team => {
+        teams.forEach(team => {
           const teamCard = document.createElement('div');
           teamCard.className = 'team-card';
           teamCard.innerHTML = `
             <h3>${team.name}</h3>
-            <p>${team.members ? team.members.length : 0} members • Created by ${team.createdBy || 'Unknown'}</p>
+            <p>${team.size} members • Created on ${new Date(team.created_at).toLocaleDateString()}</p>
           `;
           teamsList.appendChild(teamCard);
         });
@@ -471,24 +620,24 @@
           </div>
         `;
       }
+    }
+    
+    // Display collaborators
+    function displayCollaborators(collaborators) {
+      const peopleGrid = document.getElementById('peopleGrid');
       
-      // Display people - Show usernames of all collaborators
-      if (collaboratedUsers.length > 0) {
+      if (collaborators.length > 0) {
         peopleGrid.innerHTML = '';
         
-        collaboratedUsers.forEach(username => {
-          // Find profile for this user
-          const userProfile = profiles.find(profile => profile.username === username);
-          
+        collaborators.forEach(person => {
           const personCard = document.createElement('div');
           personCard.className = 'person-card';
           
           personCard.innerHTML = `
-            <img src="${userProfile ? (userProfile.photoData || 'https://via.placeholder.com/80?text=' + username.charAt(0).toUpperCase()) : 
-                                   'https://via.placeholder.com/80?text=' + username.charAt(0).toUpperCase()}" 
-                 alt="${username}" class="profile-img">
-            <a href="#" class="profile-link">@${username}</a>
-            <p>${userProfile ? userProfile.name || 'No name provided' : 'TeamUp User'}</p>
+            <img src="${person.avatar}" alt="${person.name}" class="profile-img" 
+                 onerror="this.src='https://via.placeholder.com/80?text=${person.username.charAt(0).toUpperCase()}'">
+            <a href="#" class="profile-link">@${person.username}</a>
+            <p>${person.name}</p>
           `;
           
           peopleGrid.appendChild(personCard);
@@ -503,25 +652,102 @@
       }
     }
     
+    // Load and display invitations
+    async function loadInvitations() {
+      const currentUser = JSON.parse(localStorage.getItem('teamup_current_user'));
+      
+      try {
+        const response = await fetch(`http://localhost:3001/api/users/${currentUser.id}/invitations`);
+        if (response.ok) {
+          const invitations = await response.json();
+          displayInvitations(invitations);
+        }
+      } catch (error) {
+        console.error('Error loading invitations:', error);
+      }
+    }
+    
+    // Display invitations
+    function displayInvitations(invitations) {
+      const invitationsSection = document.getElementById('invitationsSection');
+      const invitationsList = document.getElementById('invitationsList');
+      
+      if (invitations.length > 0) {
+        invitationsSection.style.display = 'block';
+        invitationsList.innerHTML = '';
+        
+        invitations.forEach(invitation => {
+          const invitationCard = document.createElement('div');
+          invitationCard.className = 'invitation-card';
+          invitationCard.innerHTML = `
+            <div class="invitation-header">
+              <div class="invitation-sender">From: ${invitation.inviter_username}</div>
+              <div class="invitation-team">Team: ${invitation.team_name}</div>
+            </div>
+            <p>You've been invited to join the team "${invitation.team_name}"</p>
+            <div class="invitation-actions">
+              <button class="invitation-btn accept" data-invitation-id="${invitation.id}">Accept</button>
+              <button class="invitation-btn reject" data-invitation-id="${invitation.id}">Reject</button>
+            </div>
+          `;
+          
+          invitationsList.appendChild(invitationCard);
+          
+          // Add event listeners
+          invitationCard.querySelector('.invitation-btn.accept').addEventListener('click', function() {
+            respondToInvitation(invitation.id, true);
+          });
+          
+          invitationCard.querySelector('.invitation-btn.reject').addEventListener('click', function() {
+            respondToInvitation(invitation.id, false);
+          });
+        });
+      } else {
+        invitationsSection.style.display = 'none';
+      }
+    }
+    
+    // Respond to invitation
+    async function respondToInvitation(invitationId, accept) {
+      try {
+        const response = await fetch(`http://localhost:3001/api/invitations/${invitationId}/respond`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ accept })
+        });
+        
+        if (response.ok) {
+          showNotification(`Invitation ${accept ? 'accepted' : 'rejected'} successfully`);
+          // Reload invitations and teams
+          loadInvitations();
+          loadTeamsAndPeople();
+        } else {
+          const errorData = await response.json();
+          showNotification(`Error: ${errorData.error}`, 'error');
+        }
+      } catch (error) {
+        showNotification('Network error responding to invitation', 'error');
+      }
+    }
+    
     // Simple notification function
-    function showNotification(message) {
-      // Create notification element
+    function showNotification(message, type = 'success') {
       const notification = document.createElement('div');
       notification.textContent = message;
       notification.style.position = 'fixed';
-      notification.style.bottom = '80px';
+      notification.style.bottom = '20px';
       notification.style.right = '20px';
-      notification.style.backgroundColor = 'var(--card-bg)';
-      notification.style.color = 'var(--text)';
+      notification.style.backgroundColor = type === 'error' ? '#ef4444' : '#10b981';
+      notification.style.color = 'white';
       notification.style.padding = '10px 15px';
       notification.style.borderRadius = '5px';
       notification.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
       notification.style.zIndex = '1000';
-      notification.style.borderLeft = '4px solid var(--secondary)';
       
       document.body.appendChild(notification);
       
-      // Remove after 3 seconds
       setTimeout(() => {
         notification.style.opacity = '0';
         notification.style.transition = 'opacity 0.5s';

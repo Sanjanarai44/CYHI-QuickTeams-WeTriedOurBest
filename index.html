@@ -264,7 +264,15 @@
       debugInfo.innerHTML = `Current user: ${currentUser || 'Not logged in'}`;
       
       if (currentUser) {
-        loginBtn.textContent = `Hi, ${currentUser}`;
+        try {
+          // Parse the user object to extract just the username
+          const userObj = JSON.parse(currentUser);
+          const username = userObj.username || 'User';
+          loginBtn.textContent = `Hi, ${username}`;
+        } catch (e) {
+          // If parsing fails, use the raw string
+          loginBtn.textContent = `Hi, ${currentUser}`;
+        }
         logoutBtn.style.display = 'inline-block';
         startBtn.onclick = function() {
           window.location.href = 'profile.html';
@@ -299,7 +307,14 @@
       debugInfo.style.cursor = 'pointer';
       debugInfo.onclick = function() {
         if (!localStorage.getItem('teamup_current_user')) {
-          localStorage.setItem('teamup_current_user', 'DemoUser');
+          // Store user as a JSON string
+          const demoUser = JSON.stringify({
+            id: 3,
+            username: "Helly",
+            email: "helly123@gmail.com",
+            created_at: "2025-09-06 01:54:49"
+          });
+          localStorage.setItem('teamup_current_user', demoUser);
           checkLoginStatus();
         }
       };

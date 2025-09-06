@@ -1,0 +1,38 @@
+# dependencies
+teamup-backend/node_modules/
+teamup-backend/npm-debug.log*
+teamup-backend/yarn-debug.log*
+teamup-backend/yarn-error.log*
+teamup-backend/pnpm-debug.log*
+
+# env files
+teamup-backend/.env
+teamup-backend/.env.local
+teamup-backend/.env.development.local
+teamup-backend/.env.test.local
+teamup-backend/.env.production.local
+
+# build outputs
+teamup-backend/dist/
+teamup-backend/build/
+teamup-backend/.cache/
+teamup-backend/.next/
+teamup-backend/out/
+teamup-backend/coverage/
+
+# system files
+.DS_Store
+Thumbs.db
+
+# IDE/project files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# logs
+teamup-backend/logs
+teamup-backend/*.log
+
+
+/node_modules/
