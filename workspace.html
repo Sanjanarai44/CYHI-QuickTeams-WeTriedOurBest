@@ -50,6 +50,11 @@
       color: var(--accent);
       letter-spacing: 2px;
     }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
     .profile-btn {
       padding: 0.5rem 1rem;
       background: var(--accent);
@@ -65,6 +70,67 @@
     .profile-btn:hover {
       background: var(--secondary);
       color: var(--primary);
+    }
+
+    /* Availability Toggle in Navbar */
+    .nav-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .toggle-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .toggle-switch {
+      position: relative;
+      width: 40px;
+      height: 20px;
+    }
+    .toggle-checkbox {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ef4444; /* Red for unavailable */
+      transition: .4s;
+      border-radius: 20px;
+    }
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    .toggle-checkbox:checked + .toggle-slider {
+      background-color: #10b981; /* Green for available */
+    }
+    .toggle-checkbox:checked + .toggle-slider:before {
+      transform: translateX(20px);
+    }
+    .status-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .status-available {
+      background-color: #10b981;
+    }
+    .status-unavailable {
+      background-color: #ef4444;
     }
 
     /* Main Workspace Container */
@@ -118,6 +184,19 @@
       margin: 0;
       font-size: 0.9rem;
       color: var(--secondary);
+    }
+
+    .empty-state {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 8px;
+      text-align: center;
+      border: 2px dashed var(--secondary);
+    }
+
+    .empty-state p {
+      margin: 0 0 1rem 0;
+      color: var(--text);
     }
 
     .new-team-btn {
@@ -229,6 +308,17 @@
       .people-grid {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       }
+      
+      .navbar {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+      }
+      
+      .nav-right {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
     }
   </style>
 </head>
@@ -238,6 +328,14 @@
     <div class="nav-left">Team<span class="neon">Up</span></div>
     <div class="nav-center">TEAMUP</div>
     <div class="nav-right">
+      <div class="nav-toggle">
+        <span class="toggle-label">Available</span>
+        <label class="toggle-switch">
+          <input type="checkbox" class="toggle-checkbox" id="availabilityToggle">
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="status-indicator status-available" id="statusIndicator"></span>
+      </div>
       <a href="profile.html" class="profile-btn">Profile</a>
     </div>
   </nav>
@@ -246,61 +344,25 @@
   <main class="workspace-container">
     <!-- Teams Section (40% width) -->
     <section class="teams-section">
-      <h2>Teams</h2>
-      <div class="teams-list">
-        <div class="team-card">
-          <h3>Hackathon Warriors</h3>
-          <p>5 members • Active</p>
-        </div>
-        <div class="team-card">
-          <h3>Design Innovators</h3>
-          <p>3 members • Active</p>
-        </div>
-        <div class="team-card">
-          <h3>Code Masters</h3>
-          <p>4 members • Inactive</p>
-        </div>
-        <div class="team-card">
-          <h3>Startup Visionaries</h3>
-          <p>6 members • Active</p>
+      <h2>Your Teams</h2>
+      <div class="teams-list" id="teamsList">
+        <!-- Teams will be dynamically inserted here -->
+        <div class="empty-state">
+          <p>You haven't joined any teams yet</p>
+          <p>Click "Find Team Members" to start collaborating!</p>
         </div>
       </div>
-      <button class="new-team-btn">Create New Team</button>
+      <button class="new-team-btn" onclick="window.location.href='TeamMembers.html'">Find Team Members</button>
     </section>
 
     <!-- People Section (60% width) -->
     <section class="people-section">
       <h2>People You Worked With</h2>
-      <div class="people-grid">
-        <div class="person-card">
-          <img src="https://via.placeholder.com/80" alt="Profile" class="profile-img">
-          <a href="#" class="profile-link">@sahil3105</a>
-          <p>Full Stack Developer</p>
-        </div>
-        <div class="person-card">
-          <img src="https://via.placeholder.com/80" alt="Profile" class="profile-img">
-          <a href="#" class="profile-link">@sanat24x</a>
-          <p>UI/UX Designer</p>
-        </div>
-        <div class="person-card">
-          <img src="https://via.placeholder.com/80" alt="Profile" class="profile-img">
-          <a href="#" class="profile-link">@sanjanarai</a>
-          <p>Frontend Developer</p>
-        </div>
-        <div class="person-card">
-          <img src="https://via.placeholder.com/80" alt="Profile" class="profile-img">
-          <a href="#" class="profile-link">@alexjones</a>
-          <p>Backend Engineer</p>
-        </div>
-        <div class="person-card">
-          <img src="https://via.placeholder.com/80" alt="Profile" class="profile-img">
-          <a href="#" class="profile-link">@emilychen</a>
-          <p>Data Scientist</p>
-        </div>
-        <div class="person-card">
-          <img src="https://via.placeholder.com/80" alt="Profile" class="profile-img">
-          <a href="#" class="profile-link">@mikeross</a>
-          <p>Project Manager</p>
+      <div class="people-grid" id="peopleGrid">
+        <!-- People will be dynamically inserted here -->
+        <div class="empty-state" style="grid-column: 1 / -1;">
+          <p>You haven't collaborated with anyone yet</p>
+          <p>Join teams to connect with other members!</p>
         </div>
       </div>
     </section>
@@ -317,26 +379,155 @@
   </footer>
 
   <script>
-    // Simple interactivity for the workspace page
     document.addEventListener('DOMContentLoaded', function() {
-      // Team card click handler
-      const teamCards = document.querySelectorAll('.team-card');
-      teamCards.forEach(card => {
-        card.addEventListener('click', function() {
-          // In a real app, this would navigate to the team page
-          console.log('Team clicked:', this.querySelector('h3').textContent);
-        });
+      const teamsList = document.getElementById('teamsList');
+      const peopleGrid = document.getElementById('peopleGrid');
+      const availabilityToggle = document.getElementById('availabilityToggle');
+      const statusIndicator = document.getElementById('statusIndicator');
+      const toggleLabel = document.querySelector('.toggle-label');
+      
+      // Load availability status from localStorage
+      const currentUser = localStorage.getItem('teamup_current_user');
+      const savedAvailability = localStorage.getItem(`teamup_availability_${currentUser}`);
+      if (savedAvailability === 'unavailable') {
+        availabilityToggle.checked = false;
+        updateAvailabilityStatus(false);
+      } else {
+        availabilityToggle.checked = true;
+        updateAvailabilityStatus(true);
+      }
+      
+      // Toggle availability
+      availabilityToggle.addEventListener('change', function() {
+        updateAvailabilityStatus(this.checked);
+        // Save to localStorage with user-specific key
+        localStorage.setItem(`teamup_availability_${currentUser}`, this.checked ? 'available' : 'unavailable');
+        
+        // Show notification
+        showNotification(`You are now ${this.checked ? 'available' : 'unavailable'} for team matching`);
       });
       
-      // New team button handler
-      const newTeamBtn = document.querySelector('.new-team-btn');
-      if (newTeamBtn) {
-        newTeamBtn.addEventListener('click', function() {
-          // In a real app, this would open a modal or navigate to team creation
-          console.log('Create new team clicked');
-        });
+      function updateAvailabilityStatus(isAvailable) {
+        if (isAvailable) {
+          toggleLabel.textContent = 'Available';
+          statusIndicator.className = 'status-indicator status-available';
+        } else {
+          toggleLabel.textContent = 'Unavailable';
+          statusIndicator.className = 'status-indicator status-unavailable';
+        }
       }
+      
+      // Load teams and people data
+      loadTeamsAndPeople();
+      
+      // Set up periodic refresh
+      setInterval(loadTeamsAndPeople, 3000);
     });
+    
+    // Load teams and people data from localStorage
+    function loadTeamsAndPeople() {
+      const teamsList = document.getElementById('teamsList');
+      const peopleGrid = document.getElementById('peopleGrid');
+      const currentUser = localStorage.getItem('teamup_current_user');
+      
+      // Get teams data
+      const teams = JSON.parse(localStorage.getItem('teamup_teams') || '[]');
+      const userTeams = teams.filter(team => 
+        team.members && team.members.includes(currentUser)
+      );
+      
+      // Get profiles data
+      const profiles = JSON.parse(localStorage.getItem('teamup_profiles') || '[]');
+      
+      // Get people you've collaborated with (all members of your teams except yourself)
+      const collaboratedUsers = [];
+      userTeams.forEach(team => {
+        if (team.members) {
+          team.members.forEach(member => {
+            if (member !== currentUser && !collaboratedUsers.includes(member)) {
+              collaboratedUsers.push(member);
+            }
+          });
+        }
+      });
+      
+      // Display teams
+      if (userTeams.length > 0) {
+        teamsList.innerHTML = '';
+        userTeams.forEach(team => {
+          const teamCard = document.createElement('div');
+          teamCard.className = 'team-card';
+          teamCard.innerHTML = `
+            <h3>${team.name}</h3>
+            <p>${team.members ? team.members.length : 0} members • Created by ${team.createdBy || 'Unknown'}</p>
+          `;
+          teamsList.appendChild(teamCard);
+        });
+      } else {
+        teamsList.innerHTML = `
+          <div class="empty-state">
+            <p>You haven't joined any teams yet</p>
+            <p>Click "Find Team Members" to start collaborating!</p>
+          </div>
+        `;
+      }
+      
+      // Display people - Show usernames of all collaborators
+      if (collaboratedUsers.length > 0) {
+        peopleGrid.innerHTML = '';
+        
+        collaboratedUsers.forEach(username => {
+          // Find profile for this user
+          const userProfile = profiles.find(profile => profile.username === username);
+          
+          const personCard = document.createElement('div');
+          personCard.className = 'person-card';
+          
+          personCard.innerHTML = `
+            <img src="${userProfile ? (userProfile.photoData || 'https://via.placeholder.com/80?text=' + username.charAt(0).toUpperCase()) : 
+                                   'https://via.placeholder.com/80?text=' + username.charAt(0).toUpperCase()}" 
+                 alt="${username}" class="profile-img">
+            <a href="#" class="profile-link">@${username}</a>
+            <p>${userProfile ? userProfile.name || 'No name provided' : 'TeamUp User'}</p>
+          `;
+          
+          peopleGrid.appendChild(personCard);
+        });
+      } else {
+        peopleGrid.innerHTML = `
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <p>You haven't collaborated with anyone yet</p>
+            <p>Join teams to connect with other members!</p>
+          </div>
+        `;
+      }
+    }
+    
+    // Simple notification function
+    function showNotification(message) {
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.textContent = message;
+      notification.style.position = 'fixed';
+      notification.style.bottom = '80px';
+      notification.style.right = '20px';
+      notification.style.backgroundColor = 'var(--card-bg)';
+      notification.style.color = 'var(--text)';
+      notification.style.padding = '10px 15px';
+      notification.style.borderRadius = '5px';
+      notification.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+      notification.style.zIndex = '1000';
+      notification.style.borderLeft = '4px solid var(--secondary)';
+      
+      document.body.appendChild(notification);
+      
+      // Remove after 3 seconds
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transition = 'opacity 0.5s';
+        setTimeout(() => notification.remove(), 500);
+      }, 3000);
+    }
   </script>
 </body>
 </html>
